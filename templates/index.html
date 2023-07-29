@@ -18,4 +18,8 @@
     <li><strong>Genres:</strong> {{ num_genres }}</li>
     <li><strong>Language:</strong> {{ num_language }}</li>
   </ul>
-{% endblock %}
+
+  <p>
+    You have visited this page {{ num_visits }} time{{ num_visits|pluralize }} before.
+  </p>
+{% endblock content %}
