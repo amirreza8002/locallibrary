@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 import uuid
+from django.conf import settings
+from datetime import date
 
 
 class Genre(models.Model):
@@ -27,11 +29,15 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey("Author", on_delete=models.SET_NULL, null=True)
 
-    summary = models.TextField(max_length=1000, help_text="enter a brief description of the book")
-    isbn = models.CharField("ISBN", max_length=13,
-                            unique=True,
-                            help_text="13 character <a href='https://www.isbn-international.org/content/what-isbn'>ISBN number</a>"
-                            )
+    summary = models.TextField(
+        max_length=1000, help_text="enter a brief description of the book"
+    )
+    isbn = models.CharField(
+        "ISBN",
+        max_length=13,
+        unique=True,
+        help_text="13 character <a href='https://www.isbn-international.org/content/what-isbn'>ISBN number</a>",
+    )
     genre = models.ManyToManyField(Genre, help_text="Select a genre for this book")
     language = models.ManyToManyField(Language)
 
@@ -50,8 +56,15 @@ class BookInstance(models.Model):
         editable=False,
     )
 
-    book = models.ForeignKey("Book", on_delete=models.RESTRICT, null=True,)
+    book = models.ForeignKey(
+        "Book",
+        on_delete=models.RESTRICT,
+        null=True,
+    )
     imprint = models.CharField(max_length=200)
+    borrower = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )
     due_back = models.DateField(null=True, blank=True)
 
     LOAN_STATUS = (
@@ -67,13 +80,18 @@ class BookInstance(models.Model):
         blank=True,
         default="m",
         help_text="Book availability",
-        )
+    )
 
     class Meta:
         ordering = ["due_back"]
+        permissions = (("can_mark_returned", "Set book as returned"),)
 
     def __str__(self):
         return f"{self.book.title} ({self.imprint})"
+
+    @property
+    def is_overdue(self):
+        return bool(self.due_back and date.today() > self.due_back)
 
 
 class Author(models.Model):
@@ -90,5 +108,3 @@ class Author(models.Model):
 
     def get_absolute_url(self):
         return reverse("author_detail", args=[str(self.id)])
-
-

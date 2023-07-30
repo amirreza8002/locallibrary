@@ -12,19 +12,15 @@ class BookTest(TestCase):
             password="testpass123",
         )
 
-        self.language = Language.objects.create(
-            language="English"
-        )
+        self.language = Language.objects.create(language="English")
 
-        self.genre = Genre.objects.create(
-            name="Drama"
-        )
+        self.genre = Genre.objects.create(name="Drama")
 
         self.author = Author.objects.create(
             first_name="Jane",
             last_name="Austen",
             date_of_birth=datetime.date(1775, 12, 16),
-            date_of_death=datetime.date(1817, 7, 18)
+            date_of_death=datetime.date(1817, 7, 18),
         )
 
         self.book = Book.objects.create(
@@ -32,7 +28,6 @@ class BookTest(TestCase):
             author=self.author,
             summary="good novel",
             isbn="3214567890432",
-
         )
         self.all_genre = Genre.objects.all()
         self.book.genre.set(self.all_genre)
@@ -43,10 +38,7 @@ class BookTest(TestCase):
         self.book.save()
 
         self.bookinstance = BookInstance.objects.create(
-            book=self.book,
-            imprint="2",
-            due_back=datetime.date(2023, 12, 5),
-            status="a"
+            book=self.book, imprint="2", due_back=datetime.date(2023, 12, 5), status="a"
         )
 
     def test_language(self):
@@ -69,7 +61,9 @@ class BookTest(TestCase):
         self.assertEqual(self.book.summary, "good novel")
 
         self.assertListEqual([str(genre) for genre in self.book.genre.all()], ["Drama"])
-        self.assertListEqual([str(language) for language in self.book.language.all()], ["English"])
+        self.assertListEqual(
+            [str(language) for language in self.book.language.all()], ["English"]
+        )
 
     def test_book_instance(self):
         self.assertEqual(f"{self.bookinstance.book}", "Pride and prejudice")

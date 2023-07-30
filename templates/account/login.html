@@ -1,0 +1,30 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+{% if form.errors %}
+<p>your username and password didn't match. please try again.</p>
+{% endif %}
+
+{% if next %}
+{% if user.isauthenticated %}
+<p>Your account doesn't have access to this page.</p>
+{% else %}
+<p>please login to see this page</p>
+{% endif %}
+{% endif %}
+
+<form method="post">{% csrf_token %}
+  <table>
+    <tr>
+      {{ form.as_p }}
+    </tr>
+  </table>
+  <input type="submit" value="login">
+  <input type="hidden" name="next" value="{{ next}}">
+</form>
+
+{# Assumes you setup the password_reset view in your URL conf #}
+<p><a href="{% url 'account_reset_password' %}">Lost password?</a></p>
+
+{% endblock content %}
