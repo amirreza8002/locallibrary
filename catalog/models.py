@@ -38,7 +38,7 @@ class Book(models.Model):
         unique=True,
         help_text="13 character <a href='https://www.isbn-international.org/content/what-isbn'>ISBN number</a>",
     )
-    genre = models.ManyToManyField(Genre, help_text="Select a genre for this book")
+    genre = models.ManyToManyField(Genre)
     language = models.ManyToManyField(Language)
 
     def __str__(self):
@@ -58,7 +58,7 @@ class BookInstance(models.Model):
 
     book = models.ForeignKey(
         "Book",
-        on_delete=models.RESTRICT,
+        on_delete=models.CASCADE,
         null=True,
     )
     imprint = models.CharField(max_length=200)
