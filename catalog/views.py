@@ -8,8 +8,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .models import Book, BookInstance, Author, Genre, Language, Author
 from .forms import RenewBookForm
 
-from .views_author import *
-from .views_book import *
+from .extra_views.views_author import *
+from .extra_views.views_book import *
 
 import datetime
 
@@ -49,10 +49,10 @@ def renew_book(request, pk):
         form = RenewBookForm(request.POST)
 
         if form.is_valid():
-            book_instance.due_back = form.cleaned_data["renewal_date"]
+            book_instance.due_back = form.cleaned_data["due_back"]
             book_instance.save()
 
-            return HttpResponseRedirect(reverse("all-borrowed"))
+            return HttpResponseRedirect(reverse("borrowed_books"))
 
     else:
         proposed_renewal_date = datetime.date.today() + datetime.timedelta(weeks=3)

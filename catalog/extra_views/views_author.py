@@ -3,11 +3,12 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
 
-from .models import Author
+from ..models import Author
 
 
 class AuthorListView(ListView):
     model = Author
+    paginate_by = 10
 
 
 class AuthorDetailView(LoginRequiredMixin, DetailView):

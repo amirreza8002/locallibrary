@@ -6,7 +6,7 @@
 <p><strong>Author:</strong> <a href="{{ book.author.get_absolute_url }}">{{ book.author }}</a></p>
 <p><strong>Summary:</strong> {{ book.summary }}</p>
 <p><strong>ISBN:</strong> {{ book.isbn }}</p>
-<p><strong>Language:</strong> {{ book.language }}</p>
+<p><strong>Language:</strong> {{ book.language.all|join:", " }}</p>
 <p><strong>Genre:</strong> {{ book.genre.all|join:", " }}</p>
 <hr>
 <p><a href="{% url 'book_update' book.pk %}">Edit Book details</a></p>

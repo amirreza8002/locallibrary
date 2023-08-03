@@ -21,12 +21,12 @@ urlpatterns = [
     path("", index, name="index"),
     path("mybooks/", LoanedBooksByUserListView.as_view(), name="my_books"),
     path("borrowed_books/", AllLoanedList.as_view(), name="borrowed_books"),
+    path("renew_book/<uuid:pk>/", renew_book, name="renew_book"),
 ]
 
 urlpatterns += [
     path("book/", BookListView.as_view(), name="books"),
     path("book/<uuid:pk>", BookDetailView.as_view(), name="book_detail"),
-    path("book/<uuid:pk>/renew/", renew_book, name="renew_book"),
     path("book/create/", BookCreateView.as_view(), name="book_create"),
     path("book/<uuid:pk>/update/", BookUpdateView.as_view(), name="book_update"),
     path("book/<uuid:pk>/delete/", BookDeleteView.as_view(), name="book_delete"),
