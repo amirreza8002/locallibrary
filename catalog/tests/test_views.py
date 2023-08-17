@@ -280,3 +280,40 @@ class RenewBookInstanceViewTest(TestCase):
             "due_back",
             "Invalid date - renewal more than 4 weeks ahead",
         )
+
+
+class AuthorCreateViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.test_user1 = get_user_model().objects.create_user(
+            username="testuser1",
+            email="testuser1@email.com",
+            password="testpass123",
+        )
+        cls.test_user2 = get_user_model().objects.create_user(
+            username="testuser2",
+            email="testuser2@email.com",
+            password="testpass123",
+        )
+
+        cls.special_permission = Permission.objects.get(codename="can_mark_returned")
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("author_create"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("/accounts/password/reset/login"))
+        self.assertRedirects(response, "%s?next=/authors/create/" % (reverse("account_login")))
+
+    def test_forbidden_if_logged_in_but_no_permission(self):
+        self.client.login(email="testuser1@email.com", password="testpass123")
+        response = self.client.get(reverse("author_create"))
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_access_if_logged_in_with_permission(self):
+        self.client.login(email="testuser2@email.com", password="testpass123")
+        response = self.client.get(reverse("author_create"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "catalog/author_create.html")
