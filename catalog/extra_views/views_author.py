@@ -19,6 +19,7 @@ class AuthorCreateView(PermissionRequiredMixin, CreateView):
     model = Author
     fields = ["first_name", "last_name", "date_of_birth", "date_of_death"]
     permission_required = "catalog.can_mark_returned"
+    template_name = "catalog/author_create.html"
 
 
 class AuthorUpdateView(PermissionRequiredMixin, UpdateView):
